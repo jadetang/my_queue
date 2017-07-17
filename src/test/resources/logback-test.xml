@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+    <property name="LOG_HOME" value="${user.home}/log"/>
+    <property name="appName" value="my_queue"/>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <Encoding>UTF-8</Encoding>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="appLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <!-- 指定日志文件的名称 -->
+        <file>${LOG_HOME}/${appName}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${appName}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <MaxHistory>365</MaxHistory>
+
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n</pattern>
+        </layout>
+    </appender>
+
+
+    <root level="debug">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="appLogAppender"/>
+    </root>
+</configuration>
