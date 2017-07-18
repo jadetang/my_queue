@@ -33,7 +33,7 @@ public class MappedFile {
 
     private void init(String filename, int fileSize) throws IOException {
         this.fileSize = fileSize;
-        this.filename = filename+".data";
+        this.filename = filename + ".data";
         this.file = new File(Config.dataDir() + this.filename);
         log.debug("create new file {}", this.file.getAbsolutePath());
         ensureDir(this.file.getParent());

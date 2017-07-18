@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
@@ -22,13 +23,11 @@ public class DefaultMessageHandler implements MessageHandler {
     private static final Logger logger = LoggerFactory.getLogger(DefaultMessageHandler.class);
 
     private Map<String, MyQueue> channels;
-    private Map<String, Integer> transferSizeMap;
     private ExecutorService receiveMessageService;
 
 
     public DefaultMessageHandler() {
         channels = new HashMap<>();
-        transferSizeMap = new HashMap<>();
         receiveMessageService = ExecutorFactory.executor("receive-message-thread-%d"
                 , Config.threadPoolCoreSize(), Config.threadMaxPoolSize());
     }
@@ -54,33 +53,35 @@ public class DefaultMessageHandler implements MessageHandler {
                         return -1;
                     });
         }
-
-
     }
 
     private void logMessage(Message m) {
-        logger.info("receive message:{}", m);
+        logger.debug("receive message:{}", m);
     }
 
     @Override
-    public synchronized void channelCreated(String channelId, int transferSize) throws IOException {
+    public synchronized void channelCreated(String channelId) throws IOException {
         if (channels.containsKey(channelId)) {
-            logger.warn("the channelId:{} already exist", channelId);
+            throw new IllegalArgumentException(String.format("the channelId:%s already exist", channelId));
         } else {
             channels.put(channelId, new SingleFileMyQueue(channelId));
-            transferSizeMap.put(channelId, transferSize);
         }
     }
 
     @Override
     public synchronized void channelDestroyed(String channelId) {
         MyQueue q = channels.remove(channelId);
-        transferSizeMap.remove(channelId);
         if (q == null) {
-            logger.warn("the channel:{} to remove is not existed", channelId);
+            logger.error("the channel:{} to remove is not existed", channelId);
         } else {
             // the queue should dispose
         }
 
+    }
+
+    @Override
+    public Optional<Message> consumeMessage(String channelId, int messageOffset) {
+        MyQueue q = channels.get(channelId);
+        return q != null ? q.consume(messageOffset) : null;
     }
 }

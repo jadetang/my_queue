@@ -1,11 +1,12 @@
 package github.jadetang.queue;
 
-import github.jadetang.TestHelp;
+import github.jadetang.Util.TestHelp;
 import github.jadetang.message.Message;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -17,7 +18,7 @@ public class SingleFileMyQueueTest {
 
         SingleFileMyQueue queue = new SingleFileMyQueue("testQueue");
 
-        Message message = TestHelp.getMessage("this is a test message");
+        Message message = TestHelp.getMessage("channelId","this is a test message");
 
         int messageNum = new Random().nextInt(100);
         int i = 0;
@@ -34,13 +35,13 @@ public class SingleFileMyQueueTest {
 
         SingleFileMyQueue queue = new SingleFileMyQueue("testQueue2");
 
-        Message message = TestHelp.getMessage("test");
+        Message message = TestHelp.getMessage("channelId","test");
 
         queue.append(message);
 
-        Message messageFromQueue = queue.consume();
+        Optional<Message> messageFromQueue = queue.consume();
 
-        Assert.assertEquals(message, messageFromQueue);
+        Assert.assertEquals(message, messageFromQueue.get());
 
     }
 
@@ -49,13 +50,13 @@ public class SingleFileMyQueueTest {
 
         SingleFileMyQueue queue = new SingleFileMyQueue("testQueue2");
 
-        Message message = TestHelp.getMessage("this is a new message");
+        Message message = TestHelp.getMessage("channelId","this is a new message");
 
         int offset = queue.append(message);
 
-        Message messageFromQueue = queue.consume(offset);
+        Optional<Message> messageFromQueue = queue.consume(offset);
 
-        Assert.assertEquals(message, messageFromQueue);
+        Assert.assertEquals(message, messageFromQueue.get());
 
 
 

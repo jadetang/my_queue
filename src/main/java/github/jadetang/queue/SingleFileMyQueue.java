@@ -52,7 +52,7 @@ public class SingleFileMyQueue implements MyQueue {
         return name;
     }
 
-    public Message consume(int messageOffset) {
+    public Optional<Message> consume(int messageOffset) {
         int fileOffset = index.find(messageOffset);
         Optional<ByteBuffer> byteBufferOptional = mappedFile.readData(fileOffset, 4 + 4);
         if (byteBufferOptional.isPresent()) {
@@ -60,9 +60,9 @@ public class SingleFileMyQueue implements MyQueue {
             int fOffset = byteBuffer.getInt();
             assert fOffset == fileOffset;
             int messageLength = byteBuffer.getInt();
-            return consume(fileOffset, messageLength);
+            return Optional.ofNullable(consume(fileOffset, messageLength));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -95,6 +95,7 @@ public class SingleFileMyQueue implements MyQueue {
 
     public int append(Message message) {
         assert message != null;
+        long start = System.currentTimeMillis();
         lock.lock();
         try {
             int fileOffset = mappedFile.getWrotePosition();
@@ -107,8 +108,8 @@ public class SingleFileMyQueue implements MyQueue {
             } else {
                 return -1;
             }
-
         } finally {
+            logger.debug(String.format("take %d mm to insert a message.", System.currentTimeMillis() - start));
             lock.unlock();
         }
     }
@@ -134,11 +135,11 @@ public class SingleFileMyQueue implements MyQueue {
                 + Integer.BYTES // message length
                 + Long.BYTES // message id
                 + Integer.BYTES // message channel id length
-                + message.getSourceChannelId().getBytes().length +
+                + message.getSourceChannelId().getBytes().length
                 +(message.getPayload() == null ? 0 : message.getPayload().length); // message load length
     }
 
-    public Message consume() {
+    public Optional<Message> consume() {
         return consume(maxOffset());
     }
 

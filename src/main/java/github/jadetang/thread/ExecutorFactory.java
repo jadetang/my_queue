@@ -11,8 +11,10 @@ public class ExecutorFactory {
     public static ExecutorService executor(String namePattern, int coresize, int maxPoolSize) {
         String.format(namePattern, 1);  //just check the pattern is valid,throw exception early
         ThreadFactory threadFactory = new CustomThreadFactory(namePattern);
-        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(maxPoolSize);
-        return new ThreadPoolExecutor(coresize, maxPoolSize, 10, TimeUnit.SECONDS, queue, threadFactory);
+        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(maxPoolSize*10);
+        ThreadPoolExecutor service =  new ThreadPoolExecutor(coresize, maxPoolSize, 10, TimeUnit.SECONDS, queue, threadFactory);
+        service.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        return service;
     }
 
 

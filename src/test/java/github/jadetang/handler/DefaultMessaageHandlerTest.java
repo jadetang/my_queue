@@ -1,6 +1,6 @@
 package github.jadetang.handler;
 
-import github.jadetang.TestHelp;
+import github.jadetang.Util.TestHelp;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class DefaultMessaageHandlerTest {
 
         DefaultMessageHandler handler = new DefaultMessageHandler();
 
-        handler.channelCreated(channelId, 3);
+        handler.channelCreated(channelId);
 
         CompletableFuture<Integer> futureInt = handler.messageReceived(TestHelp.getMessage(channelId,
                 "Bruce Lee"));

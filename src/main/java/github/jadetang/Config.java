@@ -20,6 +20,8 @@ public class Config {
     public static final String THREAD_MAX_SIZE = "thread.max.poolsize";
 
 
+
+
     static {
         properties = new Properties();
         try {
@@ -58,6 +60,10 @@ public class Config {
     private static int getInt(String key, int defaultValue) {
         String value = properties.getProperty(key);
         return value != null ? Integer.parseInt(value) : defaultValue;
+    }
+
+    public static int outputQueueSize(){
+        return 500;
     }
 
 

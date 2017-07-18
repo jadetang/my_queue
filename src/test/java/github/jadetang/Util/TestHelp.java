@@ -1,4 +1,4 @@
-package github.jadetang;
+package github.jadetang.Util;
 
 import github.jadetang.message.Message;
 
@@ -7,14 +7,11 @@ import github.jadetang.message.Message;
  */
 public class TestHelp {
 
-    public static Message getMessage(String text) {
-
-        return getMessage(null, null, text);
-
-    }
 
 
     public static Message getMessage(String channelId, String text) {
+
+        assert channelId != null;
 
         return getMessage(null, channelId, text);
 

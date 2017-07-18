@@ -2,6 +2,8 @@ package github.jadetang.queue;
 
 import github.jadetang.message.Message;
 
+import java.util.Optional;
+
 /**
  * @author sanguan.tangsicheng on 2017/7/16 下午2:14
  */
@@ -16,11 +18,8 @@ public interface MyQueue {
 
     /**
      * consume a message
-     *
-     * @param messageOffset the messageOffset of the message to be consumed
-     * @return null if the messageId is not valid
      */
-    Message consume(int messageOffset);
+    Optional<Message> consume(int messageOffset);
 
     /**
      * append a new message to the queue, return -1 if the not succeed
@@ -35,7 +34,7 @@ public interface MyQueue {
      *
      * @return the latest message
      */
-    Message consume();
+    Optional<Message> consume();
 
     /**
      * return the max offset of the queue so far
