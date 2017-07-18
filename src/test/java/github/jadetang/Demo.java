@@ -25,7 +25,6 @@ public class Demo {
         ChannelListener listener = ChannelListener.getInstance();
 
         //  listener.registerMessageHandler(new DefaultMessageHandler());
-        //listener.registerMessageHandler(new MockMessageHandler());
         listener.registerMessageHandler(new MockMessageHandler());
 
         channels.forEach(c -> {
@@ -45,7 +44,6 @@ public class Demo {
         producer.join();
         TimeUnit.SECONDS.sleep(10);
         consumer.finish();
-        System.out.println("---------");
         consumerThread.join();
     }
 

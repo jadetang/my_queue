@@ -39,13 +39,11 @@ public class DefaultMessageHandler implements MessageHandler {
         if (queue == null) {
             return CompletableFuture.completedFuture(-1);
         } else {
-            //using same thread to prepare message and append prepared message to the queue in order to
-            //to reduce the context switching overhead
             return CompletableFuture.supplyAsync(() -> {
                 logMessage(m);
                 m.prepare();
                 return m;
-            }, receiveMessageService).thenApply(message -> queue.append(m))
+            }, receiveMessageService).thenApplyAsync(message -> queue.append(m))
                     .exceptionally(throwable -> {
                         logger.error(String.format(
                                 "append message error, message:%s, channelId:%s"

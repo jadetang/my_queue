@@ -79,7 +79,6 @@ public class ChannelListener implements OrderedMessageQueueProvider {
         start = true;
     }
 
-
     public Collection<String> getChannelId() {
         return Collections.unmodifiableCollection(transferSize.keySet());
 
