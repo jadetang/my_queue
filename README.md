@@ -10,6 +10,8 @@ using memory mapped file to storage message, theoretically a message queue could
 1. using ```ConcurrentLinkedQueue``` as a buffer between the message receiver thread and the thread extracting message from message queue to the out put queue.
 2. using ```ArrayBlockingQueue``` with size of 500 as the out put queue, when the array is full, the thread extracting message will block.
 
+#### demo
+see ```Demo.class```
 
 #### todo
 1. recover message queue after crash from the data files.
